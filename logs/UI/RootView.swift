@@ -22,8 +22,6 @@ struct RootView: View {
                 }
             }
             .navigationBarTitle("apps")
-            .navigationBarColor(.spacegray)
-            .background(Color.spacegray)
         }
     }
 }
@@ -53,5 +51,6 @@ struct AppIcon: View {
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
         RootView()
+            .environment(\.colorScheme, .dark)
     }
 }

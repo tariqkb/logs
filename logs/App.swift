@@ -1,23 +1,18 @@
-//
-//  ContentView.swift
-//  logs
-//
-//  Created by Tariq Bugrara on 10/15/20.
-//  Copyright © 2020 tkb. All rights reserved.
-//
-
 import SwiftUI
 
 @main struct LogsApp: App {
-    @StateObject var store: VoiceStore = VoiceStore()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {
-            Color.black
-                .overlay (
-                    RootView().environmentObject(store)
-                )
-                .edgesIgnoringSafeArea(.vertical)
+            if let voiceStore = appDelegate.voiceStore {
+                Color.black
+                    .overlay (
+                        RootView()
+                            .environmentObject(voiceStore)
+                    )
+                    .edgesIgnoringSafeArea(.vertical)
+            }
         }
     }
 }

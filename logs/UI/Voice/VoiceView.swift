@@ -4,28 +4,21 @@ struct VoiceView: View {
     @EnvironmentObject var store: VoiceStore
     
     var body: some View {
-        NavigationView {
-            HStack {
-                Spacer()
-                VStack {
-                    Spacer()
-                    if store.state.needsPermission {
-                        MissingPermissionView()
-                    } else {
-                        Text("Hello world")
-                    }
-                    Spacer()
-                }
-                Spacer()
+        ZStack {
+            if store.state.needsPermission {
+                MissingPermissionView()
+            } else if let recordings = store.state.recordings {
+                RecordingsListView(recordings: recordings)
             }
-            .navigationBarTitle("voice")
-            .navigationBarColor(Color.spacegray)
-            .background(Color.spacegray)
-            .foregroundColor(.white)
-            .edgesIgnoringSafeArea(.all)
-            .onAppear(perform: {
-                store.dispatch(.configureAudioSession(result: nil))
-            })
+        }
+        .navigationBarTitle("voice")
+        .foregroundColor(.white)
+        .onAppear(perform: {
+            store.dispatch(.configureAudioSession(result: nil))
+            store.dispatch(.loadRecordings)
+        })
+        .popover(isPresented: !store.state.errors.isEmpty ? Binding.constant(true) : Binding.constant(false)) {
+            ErrorView(error: store.state.errors[0])
         }
     }
 }
@@ -33,5 +26,7 @@ struct VoiceView: View {
 struct VoiceView_Previews: PreviewProvider {
     static var previews: some View {
         VoiceView()
+            .environmentObject(VoiceStore(VoiceState()))
+            .environment(\.colorScheme, .dark)
     }
 }
